@@ -1,0 +1,44 @@
+.App {
+  text-align: center;
+}
+
+.sidebar-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 40rem;
+  width: 200px;
+  /* float:left; */
+
+  
+}
+
+body {
+  font-family: var(--font-family);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.sidebar {
+  float: left;
+  width: 250px;
+}
+ 
+/* .main-content {
+  margin-left: 250px; 
+} */
+/* .main-content {
+  border: 3.5px solid #030303;
+  padding: 40rem;
+  border-radius: 10px;
+  flex: 1;
+  text-align: center;
+  margin: 0.5rem;
+  box-shadow: #270101 7px 5px 8px ;
+} */
+
+.p-button-rounded {
+  border-radius: 50px; /* Ensures a fully rounded button */
+}
+
+
