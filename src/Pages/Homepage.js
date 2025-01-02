@@ -259,7 +259,7 @@ function Homepage() {
 
 
 
-<div ref={servicesRef} className="grid mb-8 justify-center">
+<div ref={servicesRef} className="grid mb-3 justify-center">
 
 {/* Services section */}
 <div className="grid mt-8 justify-center"> {/* Added margin top and bottom for spacing and center alignment */}
@@ -301,7 +301,7 @@ function Homepage() {
       <span className="bg-gray-200 p-3 shadow-4 mb-3 inline-block rounded-full"> {/* Rounded icon container */}
         <i className="pi pi-shield text-4xl text-cyan-500"></i>
       </span>
-      <div className="text-900 text-xl mb-3 font-medium ">Trusted Security</div>
+      <div className="text-900 text-xl mb-2 font-medium ">Trusted Security</div>
       <span className="text-700 line-height-3">Reliability you can count on. Our platform is built with the highest security standards to ensure your data is
         always protected. With advanced encryption and strict access controls, your certification journey is safe and secure.</span>
     </div>
@@ -314,7 +314,7 @@ function Homepage() {
 
       {/* Exams section */}
       <div className="px-4 py-8 md:px-6 lg:px-8">
-        <div className="text-900 font-bold text-4xl mb-4 text-center">Our Featured Exams</div>
+        <div className="text-900 font-bold text-4xl mb-8 text-center">Our Featured Exams</div>
         <div className="grid">
           {exams.map((exam) => (
             <div key={exam.id} className="col-12 md:col-4">
