@@ -202,12 +202,12 @@ function Homepage() {
       {/* Main hero section */}
       <div className="col-12  p-6 text-center md:text-left flex align-items-center">
         <section>
-          <span className="block text-6xl font-bold mb-1">Create the screens</span>
+          <span className="block text-6xl font-bold mb-1">We shape the future you deserve to see.</span>
           <div className="text-6xl text-primary font-bold mb-3">
-            your visitors deserve to see
+            The best certification platform in the world.
           </div>
           <p className="mt-0 mb-4 text-700 line-height-3">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+           Log in and explore our wolrd.
           </p>
 
           <Button

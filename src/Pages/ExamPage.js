@@ -4,16 +4,16 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const ExamPage = () => {
   const navigate = useNavigate();
-  const { id } = useParams(); // Extract id from the URL
+  const { id } = useParams();
   const [exam, setExam] = useState(null);
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [lockedAnswers, setLockedAnswers] = useState({});
-  const [certificateMessage, setCertificateMessage] = useState(""); // State for the certificate message
+  const [certificateMessage, setCertificateMessage] = useState("");
+  const [showVideo, setShowVideo] = useState(false);
 
-  // Define fetchExam using useCallback
   const fetchExam = useCallback(async () => {
-    console.log("Fetching exam data for ID:", id); // Log the ID being fetched
+    console.log("Fetching exam data for ID:", id);
     try {
       const response = await axios.get(`http://localhost:5201/api/Exams/GetById/${id}`);
       console.log("Fetched exam data:", response.data);
@@ -21,11 +21,11 @@ const ExamPage = () => {
     } catch (error) {
       console.error("Error fetching exam:", error.response ? error.response.data : error.message);
     }
-  }, [id]); // Depend on id
+  }, [id]);
 
   useEffect(() => {
     fetchExam();
-  }, [fetchExam]); // Include fetchExam in dependency array
+  }, [fetchExam]);
 
   const handleAnswerSelect = (questionId, answerId) => {
     if (!lockedAnswers[questionId]) {
@@ -39,11 +39,9 @@ const ExamPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Confirmation alert before submitting
     if (window.confirm("Do you wish to proceed with submission?")) {
-      // Check if all questions are answered
       if (!areAllQuestionsAnswered()) {
-        alert("Please answer all questions before submitting."); // Alert if not all questions are answered
+        alert("Please answer all questions before submitting.");
         return;
       }
 
@@ -54,6 +52,11 @@ const ExamPage = () => {
         newLockedAnswers[q.id] = true;
       });
       setLockedAnswers(newLockedAnswers);
+      // Set showVideo based on score
+      const score = calculateScore();
+      if (score < passingScore) {
+        setShowVideo(true); // Show video if the user did not pass
+      }
     }
   };
 
@@ -62,7 +65,7 @@ const ExamPage = () => {
   };
 
   const calculateScore = () => {
-    if (!exam) return 0; // Ensure exam is loaded
+    if (!exam) return 0;
     return exam.questions.reduce((total, question) => {
       const selectedAnswer = question.answers.find(
         (answer) => answer.id === answers[question.id]
@@ -76,10 +79,10 @@ const ExamPage = () => {
   }
 
   const score = calculateScore();
-  const passingScore = Math.ceil(exam.questions.length / 2); // Pass if more than 50%
+  const passingScore = Math.ceil(exam.questions.length / 2);
 
   const handleGenerateCertificate = async () => {
-    const userId = localStorage.getItem("userId"); // Get userId from local storage
+    const userId = localStorage.getItem("userId");
     if (!userId) {
       alert("User ID not found in local storage.");
       return;
@@ -89,9 +92,7 @@ const ExamPage = () => {
       const response = await axios.post(`http://localhost:5201/api/Certificates/Create/${id}`, null, {
         params: { userId: parseInt(userId) },
       });
-
-      // Show success message
-      setCertificateMessage(response.data); // Set the success message
+      setCertificateMessage(response.data);
     } catch (error) {
       console.error("Error generating certificate:", error);
       setCertificateMessage(error.response ? error.response.data : "Error generating certificate.");
@@ -181,11 +182,27 @@ const ExamPage = () => {
               >
                 Generate Certificate
               </button>
-              {certificateMessage && <p>{certificateMessage}</p>} {/* Display certificate message */}
+              {certificateMessage && <p>{certificateMessage}</p>}
             </div>
           ) : (
             <div>
               <p style={{ color: "red" }}>Keep practicing to improve your score!</p>
+              {showVideo && ( // Conditionally render video if the user fails
+                <div style={{ marginTop: "20px" }}>
+                  <h3>Here's a motivational video for you!</h3>
+                  <iframe
+                    width="560"
+                    height="315"
+                    src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&si=mys-yhspEydlAYFF"
+                    title="YouTube video player"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin"
+                    allowfullscreen
+                  ></iframe>
+
+                </div>
+              )}
             </div>
           )}
           <button

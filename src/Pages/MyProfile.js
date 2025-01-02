@@ -101,7 +101,7 @@ export default function MyProfile() {
                     className="mb-3"
                     style={{ display: "block", margin: "0 auto" }} // Center the image
                   />
-                  <div className="text-900 font-medium text-xl mb-2">
+                  <div className="text-900 font-medium text-xl mb-2 text-center">
                     {certificate.exam.name}:{" "}
                     <span className="text-500 font-medium line-height-3">
                       <em>{certificate.exam.description}</em>

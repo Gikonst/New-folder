@@ -4,6 +4,7 @@ import { InputText } from "primereact/inputtext";
 import { useNavigate } from "react-router-dom";
 import { Toast } from "primereact/toast";
 import { Dropdown } from "primereact/dropdown";
+import { Dialog } from "primereact/dialog"; // Import Dialog component
 
 export default function Exams() {
   const navigate = useNavigate();
@@ -12,6 +13,13 @@ export default function Exams() {
   const toastRef = React.useRef(null);
   const [editingExamId, setEditingExamId] = useState(null);
   const [selectedOption, setSelectedOption] = useState("");
+
+  // State for the dialog/modal
+  const [isDialogVisible, setIsDialogVisible] = useState(false);
+  const [newExam, setNewExam] = useState({ name: "", imageSrc: "", description: "", programmingLanguageId: "" });
+  
+  // State for programming languages
+  const [programmingLanguages, setProgrammingLanguages] = useState([]);
 
   const managementOptions = [
     { label: "Exams", value: "exams" },
@@ -40,7 +48,18 @@ export default function Exams() {
       }
     };
 
+    const fetchProgrammingLanguages = async () => {
+      try {
+        const response = await fetch("http://localhost:5201/api/ProgrammingLanguages/GetAll");
+        const data = await response.json();
+        setProgrammingLanguages(data.map(lang => ({ label: lang.name, value: lang.id }))); // Adjust according to your API response
+      } catch (error) {
+        console.error("Error fetching programming languages:", error);
+      }
+    };
+
     fetchExams();
+    fetchProgrammingLanguages(); // Fetch programming languages on component mount
   }, []);
 
   const handleDelete = async (id) => {
@@ -66,14 +85,37 @@ export default function Exams() {
   };
 
   const handleAddExam = () => {
-    const newExam = {
-      id: exams.length + 1,
-      name: "New Exam",
-      imageSrc: "https://f.hubspotusercontent10.net/hubfs/6448316/web-programming-languages.jpg",
-      description: "New Exam Description",
-    };
-    setExams([...exams, newExam]);
-    toastRef.current.show({ severity: 'success', summary: 'Success', detail: 'New exam added!', life: 3000 });
+    setIsDialogVisible(true); // Show the dialog when the button is clicked
+    setNewExam({ name: "", imageSrc: "", description: "", programmingLanguageId: "" }); // Reset new exam details
+  };
+
+  const handleDialogSave = async () => {
+    try {
+      const response = await fetch("http://localhost:5201/api/Exams/Create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newExam),
+      });
+
+      const responseMessage = await response.text();
+
+      if (response.ok) {
+        setExams([...exams, { ...newExam, id: exams.length + 1 }]); // Add the new exam to state
+        toastRef.current.show({ severity: 'success', summary: 'Success', detail: 'New exam added!', life: 3000 });
+        setIsDialogVisible(false); // Hide the dialog
+      } else {
+        toastRef.current.show({ severity: 'error', summary: 'Error', detail: responseMessage, life: 3000 });
+      }
+    } catch (error) {
+      console.error("Error adding exam:", error);
+      toastRef.current.show({ severity: 'error', summary: 'Error', detail: "An error occurred while adding the exam.", life: 3000 });
+    }
+  };
+
+  const handleDialogCancel = () => {
+    setIsDialogVisible(false); // Hide the dialog on cancel
   };
 
   const handleExamPageNavigation = (examId) => {
@@ -121,13 +163,13 @@ export default function Exams() {
     setSelectedOption(e.value);
     switch (e.value) {
       case "programmingLanguages":
-        navigate("/ProgrammingLanguages"); // Navigate to Programming Languages component
+        navigate("/ProgrammingLanguages");
         break;
       case "questions":
-        navigate("/Questions"); // Navigate to Questions component
+        navigate("/Questions");
         break;
       case "answers":
-        navigate("/Answers"); // Navigate to Answers component
+        navigate("/Answers");
         break;
       default:
         break;
@@ -265,6 +307,43 @@ export default function Exams() {
           <Button label="Add New Exam" icon="pi pi-plus" onClick={handleAddExam} className="p-3 w-full" />
         </div>
       )}
+
+      {/* Modal for adding new exam */}
+      <Dialog header="Add New Exam" visible={isDialogVisible} onHide={handleDialogCancel} footer={
+        <div>
+          <Button label="Cancel" icon="pi pi-times" onClick={handleDialogCancel} />
+          <Button label="Save" icon="pi pi-check" onClick={handleDialogSave} />
+        </div>
+      }>
+        <div>
+          <InputText
+            placeholder="Exam Name"
+            value={newExam.name}
+            onChange={(e) => setNewExam({ ...newExam, name: e.target.value })}
+            className="mb-2 w-full"
+          />
+          <InputText
+            placeholder="Image URL"
+            value={newExam.imageSrc}
+            onChange={(e) => setNewExam({ ...newExam, imageSrc: e.target.value })}
+            className="mb-2 w-full"
+          />
+          <InputText
+            placeholder="Exam Description"
+            value={newExam.description}
+            onChange={(e) => setNewExam({ ...newExam, description: e.target.value })}
+            className="mb-2 w-full"
+          />
+          {/* Dropdown for selecting programming language */}
+          <Dropdown
+            placeholder="Select Programming Language"
+            value={newExam.programmingLanguageId}
+            options={programmingLanguages}
+            onChange={(e) => setNewExam({ ...newExam, programmingLanguageId: e.value })}
+            className="w-full mb-2"
+          />
+        </div>
+      </Dialog>
     </div>
   );
 }
