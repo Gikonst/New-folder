@@ -8,6 +8,9 @@ import AboutUs from "./Pages/AboutUs";
 import RegisterForm from "./Pages/RegisterForm";
 import Homepage from "./Pages/Homepage";
 import ExamPage from "./Pages/ExamPage";
+import ProgrammingLanguages from "./Pages/ProgrammingLanguages";
+import Questions from "./Pages/Questions";
+import Answers from "./Pages/Answers";
 
 function App() {
   return (
@@ -31,8 +34,10 @@ function MainLayout() {
           <Route path="/MyProfile" element={<MyProfile />} />
           <Route path="/Exams" element={<Exams />} />
           <Route path="/AboutUs" element={<AboutUs />} />
-          {/* Add route for ExamPage with examId parameter */}
           <Route path="/ExamPage/:id" element={<ExamPage />} />
+          <Route path="/ProgrammingLanguages" element={<ProgrammingLanguages />} />
+          <Route path="/Questions" element={<Questions />} />
+          <Route path="/Answers" element={<Answers />} />
         </Routes>
       </main>
     </div>
