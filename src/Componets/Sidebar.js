@@ -61,12 +61,23 @@ export default class Sidebar extends React.Component {
                     </li>
                   )}
 
-                  <li className="nav-item">
-                    <a href="/Exams" className="nav-link text-black">
-                      <i className="bi bi-basket me-2 fs-5"></i>
-                      <span className="fs-10">Exams</span>
-                    </a>
-                  </li>
+                  {/* Conditionally render "Exams" or "Manage" based on userRole */}
+                  {userRole === "1" ? (
+                    <li className="nav-item">
+                      <a href="/Exams" className="nav-link text-black">
+                        <i className="bi bi-book me-2 fs-5"></i>
+                        <span className="fs-10">Manage</span>
+                      </a>
+                    </li>
+                  ) : (
+                    <li className="nav-item">
+                      <a href="/Exams" className="nav-link text-black">
+                        <i className="bi bi-basket me-2 fs-5"></i>
+                        <span className="fs-10">Exams</span>
+                      </a>
+                    </li>
+                  )}
+
                   <li className="nav-item p-1">
                     <a href="/AboutUs" className="nav-link text-black">
                       <i className="bi bi-info-circle me-2 fs-5"></i>
